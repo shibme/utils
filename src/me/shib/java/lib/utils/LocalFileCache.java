@@ -104,10 +104,12 @@ public final class LocalFileCache {
         if (keyDir.exists()) {
             String[] encodedKeys = keyDir.list();
             ArrayList<String> keyList = new ArrayList<>();
-            for (String enKey : encodedKeys) {
-                String key = decodeKeyToName(enKey.replace(".json", ""));
-                if (key != null) {
-                    keyList.add(key);
+            if(encodedKeys != null) {
+                for (String enKey : encodedKeys) {
+                    String key = decodeKeyToName(enKey.replace(".json", ""));
+                    if (key != null) {
+                        keyList.add(key);
+                    }
                 }
             }
             if (keyList.size() > 0) {
