@@ -1,5 +1,7 @@
-package me.shib.java.lib.utils;
+package me.shib.java.app.bot.pricemonitor;
 
+
+import me.shib.java.lib.utils.ZipUtil;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -12,7 +14,7 @@ public final class LocalFileCache {
 
     private static final String defaultLocalCacheDirectory = "LocalFileCacheData";
 
-    private static Logger logger = Logger.getLogger(LocalFileCache.class.getName());
+    private static Logger logger = Logger.getLogger(me.shib.java.lib.utils.LocalFileCache.class.getName());
 
     private File localCacheDirectory;
     private long localCacheRenewalInterval;
@@ -118,7 +120,8 @@ public final class LocalFileCache {
                 return keyArr;
             }
         }
-        return null;
+        keyDir.mkdirs();
+        return new String[0];
     }
 
     public String getDataforKey(String type, String key) {
