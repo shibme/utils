@@ -4,6 +4,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -31,6 +33,48 @@ public class FileUtils {
                         fos.write(buffer, 0, len);
                     }
                     fos.close();
+                }
+                ze = zis.getNextEntry();
+            }
+            zis.closeEntry();
+            zis.close();
+            System.out.println("Extracted " + zipFile.getName() + " successfully!");
+            return true;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    public static boolean unZip(File zipFile, String fileToExtract, File outputDirectory) {
+        List<String> filesToExtract = new ArrayList<>();
+        filesToExtract.add(fileToExtract);
+        return unZip(zipFile, filesToExtract, outputDirectory);
+    }
+
+    public static boolean unZip(File zipFile, List<String> filesToExtract, File outputDirectory) {
+        byte[] buffer = new byte[1024];
+        try {
+            if (!outputDirectory.exists()) {
+                outputDirectory.mkdir();
+            }
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+            ZipEntry ze = zis.getNextEntry();
+            while (ze != null) {
+                String fileName = ze.getName();
+                File newFile = new File(outputDirectory.getAbsolutePath() + File.separator + fileName);
+                if (filesToExtract.contains(newFile.getName())) {
+                    System.out.println("Extracting : " + newFile.getAbsoluteFile());
+                    if (ze.isDirectory()) {
+                        newFile.mkdirs();
+                    } else {
+                        new File(newFile.getParent()).mkdirs();
+                        FileOutputStream fos = new FileOutputStream(newFile);
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                        fos.close();
+                    }
                 }
                 ze = zis.getNextEntry();
             }
