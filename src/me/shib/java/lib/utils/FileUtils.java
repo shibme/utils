@@ -12,37 +12,7 @@ import java.util.zip.ZipInputStream;
 public class FileUtils {
 
     public static boolean unZip(File zipFile, File outputDirectory) {
-        byte[] buffer = new byte[1024];
-        try {
-            if (!outputDirectory.exists()) {
-                outputDirectory.mkdir();
-            }
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-            ZipEntry ze = zis.getNextEntry();
-            while (ze != null) {
-                String fileName = ze.getName();
-                File newFile = new File(outputDirectory.getAbsolutePath() + File.separator + fileName);
-                System.out.println("Extracting : " + newFile.getAbsoluteFile());
-                if (ze.isDirectory()) {
-                    newFile.mkdirs();
-                } else {
-                    new File(newFile.getParent()).mkdirs();
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
-                    }
-                    fos.close();
-                }
-                ze = zis.getNextEntry();
-            }
-            zis.closeEntry();
-            zis.close();
-            System.out.println("Extracted " + zipFile.getName() + " successfully!");
-            return true;
-        } catch (IOException ex) {
-            return false;
-        }
+        return unZip(zipFile, new ArrayList<String>(), outputDirectory);
     }
 
     public static boolean unZip(File zipFile, String fileToExtract, File outputDirectory) {
@@ -62,7 +32,7 @@ public class FileUtils {
             while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File(outputDirectory.getAbsolutePath() + File.separator + fileName);
-                if (filesToExtract.contains(newFile.getName())) {
+                if (filesToExtract.size() == 0 || filesToExtract.contains(newFile.getName())) {
                     System.out.println("Extracting : " + newFile.getAbsoluteFile());
                     if (ze.isDirectory()) {
                         newFile.mkdirs();
